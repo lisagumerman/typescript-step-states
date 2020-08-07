@@ -1,4 +1,5 @@
 import {State} from "./state";
+import {StateMachine} from "../state-machine";
 
 export class TaskState extends State {
 
@@ -15,5 +16,10 @@ export class TaskState extends State {
 
     setHeartbeatSeconds(seconds : number) {
         this.heartbeatSeconds = Math.floor(Math.abs(seconds));
+    }
+
+    execute(input : {}) : {} {
+        //TODO get next
+        return {"resource": this.resource}
     }
 }

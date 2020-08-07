@@ -13,12 +13,18 @@ export class State {
 
     private next ?: string;
 
+    private machine ?: StateMachine;
+
     retry ?: string;
     catch ?: string;
 
     constructor(taskType : string) {
         this.type = taskType;
         this.setNext();
+    }
+
+    setMachine(machine : StateMachine) {
+        this.machine = machine;
     }
 
     setNext(next ?: string) : boolean {
@@ -29,6 +35,17 @@ export class State {
         }
         return false;
     } //TODO validate w/ state machine validity of next value
+
+    getNext() : State | string {
+        if (this.next) {
+            return this.machine.getState(this.next) || "End";
+        }
+        return null;
+    }
+
+    isEndState() : boolean {
+        return !(this.type == "Succeed" || this.type == "Fail");
+    }
 
     setComment(comment : string) {
         this.comment = comment;
@@ -97,8 +114,7 @@ export class State {
         return `{${pairs || this.toJSONPairs()}}`
     }
 
-    execute(input : {}, machine : StateMachine) : {} {
-        //TODO find next and do that
+    execute(input : {}) : {} {
         return input;
     }
 }

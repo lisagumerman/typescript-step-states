@@ -17,6 +17,7 @@ export class StateMachine {
         if (this.states[key]) {
             return false;
         } else {
+            state.setMachine(this);
             this.states[key] = state;
             if (!this.startAt) {
                 this.startAt = key; //set the first one so it's never null if we have a step
@@ -78,7 +79,8 @@ export class StateMachine {
     execute(input : {}) {
         if (this.isValid()) {
             console.log("STARTING");
-            console.log(this.states[this.startAt].execute(input, this));
+            let currentState = this.states[this.startAt];
+            this.continue(currentState, input);
             console.log("ENDING");
             console.log("EXECUTED:");
             console.log(this.toJSON());
@@ -87,4 +89,15 @@ export class StateMachine {
         }
     }
 
+    continue(state : State, input : {}) {
+        let nextInput = state.execute(input);
+        let next = state.getNext();
+        if (next instanceof State) {
+            this.continue(next, nextInput);
+        }
+    }
+
+    getState(name : string) : State {
+        return this.states[name] || null;
+    }
 }
