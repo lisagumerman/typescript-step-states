@@ -11,11 +11,15 @@
     "rootDir": "src",                         /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
 
     /* Strict Type-Checking Options */
-    "strict": true,                           /* Enable all strict type-checking options. */
-    "noImplicitAny": true,                    /* Raise error on expressions and declarations with an implied 'any' type. */
+    "strict": false,                           /* Enable all strict type-checking options. */
+    "noImplicitAny": false,                    /* Raise error on expressions and declarations with an implied 'any' type. */
 
     /* Module Resolution Options */
     "esModuleInterop": true,                  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+
+    /* Experimental Options */
+     "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+     "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
 
     /* Advanced Options */
     "resolveJsonModule": true,                /* Include modules imported with '.json' extension */
