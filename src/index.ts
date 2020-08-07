@@ -6,4 +6,4 @@ const firstPass = new PassState();
 firstPass.setComment("Just a first pass");
 stateMachine.addState("FirstPass", firstPass);
 
-console.log(stateMachine.toJSON());
+stateMachine.execute({"key": "value"});

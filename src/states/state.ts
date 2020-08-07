@@ -1,3 +1,5 @@
+import {StateMachine} from "../state-machine";
+
 export class State {
 
     readonly type : string;
@@ -87,11 +89,16 @@ export class State {
         let keys = Object.keys(this);
 
         return keys.map((key : string) => {
-            return `"${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}:${this[key]}"`
+            return `"${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}":"${this[key]}"`
         }).join(',')
     }
 
     toJSON(pairs ?: string) {
         return `{${pairs || this.toJSONPairs()}}`
+    }
+
+    execute(input : {}, machine : StateMachine) : {} {
+        //TODO find next and do that
+        return input;
     }
 }

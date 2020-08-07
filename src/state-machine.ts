@@ -47,29 +47,44 @@ export class StateMachine {
 
 
     toJSON() : string {
-        if (this.startAt) {
-            let content = `"StartAt":"${this.startAt}","Version":"${this.version}"`;
-            if (this.comment) {
-                content += `,"Comment":"${this.comment}"`
-            }
-            if (this.timeoutSeconds) {
-                content += `,"TimeoutSeconds":"${this.timeoutSeconds}"`
-            }
+        if (this.isValid()) {
+
+            let keys = Object.keys(this);
+
+            let content = keys.reduce((result : string[], key : string) => {
+                if (key != 'states') {
+                   result.push(`"${key.charAt(0).toUpperCase() + key.slice(1)}":"${this[key]}"`)
+                }
+                return result;
+            }, []);
 
             let stateKeys = Object.keys(this.states);
             let stateJSON = stateKeys.map((key : string) => {
-                return this.states[key].toJSON()
+                return `{"${key}":${this.states[key].toJSON()}}`
             }).join(',');
-            content += `,"States":${stateJSON}`;
+            content.push(`"States":${stateJSON}`);
 
-            return `{${content}}`
+            return `{${content.join(',')}}`
         }
 
 
         return null;
     }
 
+    isValid() : boolean {
+        return !!this.startAt
+    }
 
-
+    execute(input : {}) {
+        if (this.isValid()) {
+            console.log("STARTING");
+            console.log(this.states[this.startAt].execute(input, this));
+            console.log("ENDING");
+            console.log("EXECUTED:");
+            console.log(this.toJSON());
+        } else {
+            console.log("UNABLE TO START -- STATE MACHINE INVALID")
+        }
+    }
 
 }
