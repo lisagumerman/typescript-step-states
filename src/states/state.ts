@@ -18,9 +18,13 @@ export class State {
     retry ?: string;
     catch ?: string;
 
-    constructor(taskType : string) {
+    constructor(private name : string, taskType : string) {
         this.type = taskType;
         this.setNext();
+    }
+
+    getName() {
+        return this.name;
     }
 
     setMachine(machine : StateMachine) {
@@ -30,11 +34,19 @@ export class State {
     setNext(next ?: string) : boolean {
         let allowed = ["Pass", "Task","Wait", "Parallel", "Map"];
         if (allowed.indexOf(this.type) > -1) {
-            this.next = next || "End";
-            return true;
+            if (next && this.machine) {
+                if (this.machine.getState(next)) {
+                    this.next = next;
+                } else {
+                    return false;
+                }
+            } else {
+                this.next = "End";
+                return true;
+            }
         }
         return false;
-    } //TODO validate w/ state machine validity of next value
+    }
 
     getNext() : State | string {
         if (this.next) {
@@ -105,9 +117,12 @@ export class State {
     toJSONPairs() : string {
         let keys = Object.keys(this);
 
-        return keys.map((key : string) => {
-            return `"${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}":"${this[key]}"`
-        }).join(',')
+        return keys.reduce((result : string[], key : string) => {
+            if (key != 'machine' && key != 'name') {
+                result.push(`"${key.charAt(0).toUpperCase() + key.slice(1)}":"${this[key]}"`)
+            }
+            return result;
+        }, []).join(',')
     }
 
     toJSON(pairs ?: string) {
@@ -115,6 +130,8 @@ export class State {
     }
 
     execute(input : {}) : {} {
+        console.log("Input:");
+        console.log(input);
         return input;
     }
 }

@@ -1,13 +1,13 @@
 import {State} from "./state";
-import {StateMachine} from "../state-machine";
 
 export class TaskState extends State {
 
     private timeoutSeconds ?: number = 60;
     private heartbeatSeconds ?: number;
 
-    constructor(private resource : string) {
-        super("Task");
+    constructor(name : string, private resource : string) {
+        super(name, "Task");
+        this.setNext();
     }
 
     setTimeoutSeconds(seconds : number) {
@@ -19,7 +19,6 @@ export class TaskState extends State {
     }
 
     execute(input : {}) : {} {
-        //TODO get next
         return {"resource": this.resource}
     }
 }

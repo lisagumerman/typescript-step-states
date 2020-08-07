@@ -9,7 +9,9 @@ export class StateMachine {
     private timeoutSeconds ?: number;
 
 
-    addState(key : string, state : State) : boolean {
+    addState(state : State) : boolean {
+        let key = state.getName();
+
         if (key.length > 128) {
             return false;
         }
@@ -90,6 +92,9 @@ export class StateMachine {
     }
 
     continue(state : State, input : {}) {
+        //TODO make name a property on State bc otherwise logging & assigning is irritating
+        console.log("State:")
+        console.log(state.toJSON());
         let nextInput = state.execute(input);
         let next = state.getNext();
         if (next instanceof State) {
