@@ -42,7 +42,7 @@ export class StateMachine {
     }
 
     setTimeoutSeconds(seconds : number) {
-        this.timeoutSeconds = Math.floor(seconds);
+        this.timeoutSeconds = Math.floor(Math.abs(seconds));
     }
 
 
