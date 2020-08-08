@@ -80,21 +80,28 @@ export class StateMachine {
 
     execute(input : {}) {
         if (this.isValid()) {
-            console.log("STARTING");
-            let currentState = this.states[this.startAt];
-            this.continue(currentState, input);
-            console.log("ENDING");
-            console.log("EXECUTED:");
-            console.log(this.toJSON());
+            if (this.timeoutSeconds) {
+                setTimeout(() => {this.doExecute(input)}, this.timeoutSeconds*1000)
+            } else {
+                this.doExecute(input);
+            }
+
+
         } else {
             console.log("UNABLE TO START -- STATE MACHINE INVALID")
         }
     }
 
-    continue(state : State, input : {}) {
-        //TODO make name a property on State bc otherwise logging & assigning is irritating
-        console.log("State:")
-        console.log(state.toJSON());
+    private doExecute(input : {}) {
+        console.log("STARTING");
+        let currentState = this.states[this.startAt];
+        this.continue(currentState, input);
+        console.log("ENDING");
+        console.log("EXECUTED:");
+        console.log(this.toJSON());
+    }
+
+    private continue(state : State, input : {}) {
         let nextInput = state.execute(input);
         let next = state.getNext();
         if (next instanceof State) {

@@ -19,6 +19,11 @@ export class TaskState extends State {
     }
 
     execute(input : {}) : {} {
+        super.execute(input);
         return {"resource": this.resource}
+    }
+
+    setCatch(next: string, errors?: string[]): boolean {
+        return super.setCatch(next, ["States.ALL"]);
     }
 }

@@ -1,4 +1,5 @@
 import {StateMachine} from "../state-machine";
+import {ErrorCatch} from "./error-catch";
 
 export class State {
 
@@ -16,11 +17,15 @@ export class State {
     private machine ?: StateMachine;
 
     retry ?: string;
-    catch ?: string;
+    catch ?: ErrorCatch; //should be an array eventually
 
     constructor(private name : string, taskType : string) {
         this.type = taskType;
         this.setNext();
+    }
+
+    getType() {
+        return this.type;
     }
 
     getName() {
@@ -37,6 +42,7 @@ export class State {
             if (next && this.machine) {
                 if (this.machine.getState(next)) {
                     this.next = next;
+                    return true;
                 } else {
                     return false;
                 }
@@ -104,9 +110,12 @@ export class State {
         return false;
     }
 
-    setCatch(caught : string) : boolean {
+    setCatch(next : string, errors ?: string[]) : boolean {
         let allowed = ["Task", "Parallel", "Map"];
-        if (allowed.indexOf(this.type) > -1) {
+        if (allowed.indexOf(this.type) > -1 && errors) {
+            let caught = new ErrorCatch(errors);
+            caught.state = this;
+            caught.setNext(next);
             this.catch = caught;
             return true;
         }
@@ -118,8 +127,11 @@ export class State {
         let keys = Object.keys(this);
 
         return keys.reduce((result : string[], key : string) => {
-            if (key != 'machine' && key != 'name') {
+            if (key != 'machine' && key != 'name' && key != 'catch') {
                 result.push(`"${key.charAt(0).toUpperCase() + key.slice(1)}":"${this[key]}"`)
+            }
+            if (key == 'catch') {
+                result.push(`"${key.charAt(0).toUpperCase() + key.slice(1)}":"${this[key].toJSON()}"`)
             }
             return result;
         }, []).join(',')
@@ -130,8 +142,11 @@ export class State {
     }
 
     execute(input : {}) : {} {
-        console.log("Input:");
-        console.log(input);
+        console.log(`${this.name} Input: ${JSON.stringify(input)}`);
         return input;
+    }
+
+    getMachine() : StateMachine {
+        return this.machine;
     }
 }
