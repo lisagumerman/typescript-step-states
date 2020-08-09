@@ -33,3 +33,19 @@ test("can have weird heartbeatseconds", () => {
 
     expect(basicTask.toJSON().indexOf(`"HeartbeatSeconds":"21"`)).toBeGreaterThan(-1);
 });
+
+test("does not have a catch by default", () => {
+    expect(basicTask.toJSON().indexOf("Catch")).toBe(-1);
+});
+
+test("can have a catch", () => {
+    basicTask.setCatch("End");
+
+    expect(basicTask.toJSON().indexOf("Catch")).toBeGreaterThan(-1);
+});
+
+test("supports all status catches", () => {
+    basicTask.setCatch("End");
+
+    expect(basicTask.toJSON().indexOf("States.ALL")).toBeGreaterThan(-1);
+});
